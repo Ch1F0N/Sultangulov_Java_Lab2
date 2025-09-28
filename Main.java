@@ -39,15 +39,15 @@ public class Main {
 
                             if (!lastName.isEmpty() || !name.isEmpty() || !midName.isEmpty()) {
                                 CheckInput.checkEmptyNames(namesList, lastName, name, midName);
+                            }
 
-                                System.out.println("\nСписок всех ФИО:");
-                                if (namesList.isEmpty()) {
-                                    System.out.println("Все элементы списка пустые!");
-                                }
+                            System.out.println("\nСписок всех ФИО:");
+                            if (namesList.isEmpty()) {
+                                System.out.println("Все элементы списка пустые!");
+                            }
 
-                                for (int el = 0; el < namesList.size(); el++) {
-                                    System.out.println(el + 1 + ") " + namesList.get(el));
-                                }
+                            for (int el = 0; el < namesList.size(); el++) {
+                                System.out.println(el + 1 + ") " + namesList.get(el));
                             }
                         }
 
@@ -69,15 +69,15 @@ public class Main {
                             if (!lastName.isEmpty() || !name.isEmpty() || !midName.isEmpty()) {
                                 height = CheckInput.readInt(scanner, "Введите рост человека: ", 0);
                                 CheckInput.checkEmptyHumans(humansList, lastName, name, midName, height);
+                            }
 
-                                System.out.println("\nСписок всех ФИО и их роста:");
-                                if (humansList.isEmpty()) {
-                                    System.out.println("Все элементы списка пустые!");
-                                }
+                            System.out.println("\nСписок всех ФИО и их роста:");
+                            if (humansList.isEmpty()) {
+                                System.out.println("Все элементы списка пустые!");
+                            }
 
-                                for (int el = 0; el < humansList.size(); el++) {
-                                    System.out.println(el + 1 + ") " + humansList.get(el) + " см.");
-                                }
+                            for (int el = 0; el < humansList.size(); el++) {
+                                System.out.println(el + 1 + ") " + humansList.get(el) + " см.");
                             }
                         }
 
@@ -143,9 +143,11 @@ public class Main {
                         // Создаём Ломаную
                         BrokenLineEx9 emptyLine = new BrokenLineEx9();
                         BrokenLineEx9 someLine = new BrokenLineEx9(2, 8, 3, -4);
+                        BrokenLineEx9 point = new BrokenLineEx9(9, 4);
 
                         System.out.println("Ломаная без указания параметров: " + emptyLine);
                         System.out.println("Ломаная с указанием некоторого набора точек (2): " + someLine);
+                        System.out.println("Одна точка: " + point);
                         System.out.println();
                         break;
 
