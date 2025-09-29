@@ -9,7 +9,7 @@
 
 # Тема: Объектно-ориентированное программирование (ООП)
 
-Сперва я создал в своей лабораторной работе меню со всеми задания от 1 до 20, а также разделил их все на категории, чтобы пользователю было удобно выбирать, какую именно из программ он хочет использовать:
+Сперва я создал в своей лабораторной работе меню со всеми задания от 1 до 6, а также разделил их все на категории, чтобы пользователю было удобно выбирать, какую именно из программ он хочет использовать:
 ```java
 System.out.println("Меню заданий:\n" +
               "1. Имена\n" +
@@ -34,7 +34,6 @@ int task_menu = scanner.nextInt();
 Для выполнения этого задания я создал класс-сущность **Name**:
 ```java
 class Name {
-    StringBuilder sb = new StringBuilder();
     private String lastName;
     private String name;
     private String midName;
@@ -54,10 +53,13 @@ class Name {
     public Name(String lastName, String name) {
         this.lastName = lastName;
         this.name = name;
+        this.midName = null;
     }
 
     public Name(String name) {
+        this.lastName = null;
         this.name = name;
+        this.midName = null;
     }
 
     public String getLastName() {
@@ -73,6 +75,7 @@ class Name {
     }
 
     public String toString() {
+        StringBuilder sb = new StringBuilder();
         if (lastName != null && !lastName.isEmpty()) {
             sb.append(lastName);
         }
@@ -106,10 +109,13 @@ public Name(String lastName, String name, String midName) {
 public Name(String lastName, String name) {
     this.lastName = lastName;
     this.name = name;
+    this.midName = null;
 }
 
 public Name(String name) {
+    this.lastName = null;
     this.name = name;
+    this.midName = null;
 }
 ```
 Создал геттеры для получения ФИО по отдельности, создавал я их для выполнения одного из следующих заданий, так как для решения первого я уже пользовался другим способом:
@@ -129,6 +135,7 @@ public String getMidName() {
 Далее я делаю перегрузку метода **toString()**, для того, чтобы вывод строки был таким, каким я его хочу:
 ```java
 public String toString() {
+    StringBuilder sb = new StringBuilder();
     if (lastName != null && !lastName.isEmpty()) {
         sb.append(lastName);
     }
@@ -448,49 +455,36 @@ public static ArrayList<String> checkEmptyNames(ArrayList<String> namesList, Str
 
 Для выполнения этого задания я создал класс-сущность **Human**:
 ```java
-public class Human extends Name {
-    StringBuilder sb = new StringBuilder();
-    private String lastName2;
-    private String name2;
-    private String midName2;
+public class Human {
+    private Name name;
     private int height;
 
     public Human() {
-        this.lastName2 = "Дуров";
-        this.name2 = "Павел";
-        this.midName2 = "Валерьевич (Человек по умолчанию)";
+        this.name = null;
         this.height = 152;
     }
 
-    public Human(String lastName2, String name2, String midName2, int height) {
-        this.lastName2 = lastName2;
-        this.name2 = name2;
-        this.midName2 = midName2;
-        this.height = height;
-    }
-
-    public Human(String lastName2, String name2, int height) {
-        this.lastName2 = lastName2;
-        this.name2 = name2;
-        this.height = height;
-    }
-
-    public Human(String name2, int height) {
-        this.name2 = name2;
+    public Human(Name name, int height) {
+        this.name = name;
         this.height = height;
     }
 
     public String toString() {
-        if (lastName2 != null && !lastName2.isEmpty()) {
-            sb.append(lastName2);
+        StringBuilder sb = new StringBuilder();
+        String lastName = name.getLastName();
+        String firstName = name.getName();
+        String midName = name.getMidName();
+
+        if (lastName != null && !lastName.isEmpty()) {
+            sb.append(lastName);
         }
-        if (name2 != null && !name2.isEmpty()) {
+        if (firstName != null && !firstName.isEmpty()) {
             if (!sb.isEmpty()) sb.append(" ");
-            sb.append(name2);
+            sb.append(firstName);
         }
-        if (midName2 != null && !midName2.isEmpty()) {
+        if (midName != null && !midName.isEmpty()) {
             if (!sb.isEmpty()) sb.append(" ");
-            sb.append(midName2);
+            sb.append(midName);
         }
 
         return sb.append(" и ростом ").append(height).toString();
