@@ -1,37 +1,43 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class BrokenLineEx9 {
-    private int x;
-    private int y;
-    private int x2;
-    private int y2;
+    private List<Point> points;
 
     public BrokenLineEx9() {
-        this.x = 0;
-        this.y = 0;
+        this.points = new ArrayList<>();
     }
 
-    public BrokenLineEx9(int x, int y, int x2, int y2) {
-        this.x = x;
-        this.y = y;
-        this.x2 = x2;
-        this.y2 = y2;
+    public BrokenLineEx9(Point... points) {
+        this.points = new ArrayList<>(Arrays.asList(points));
     }
 
-    public BrokenLineEx9(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public void addPoint(Point point) {
+        points.add(point);
     }
 
-    public void movePoint() {
-        this.x += 2;
-        this.y -= 5;
+    public List<Point> getPoints() {
+        return points;
+    }
+
+    public void move(double dx, double dy) {
+        for (Point p : points) {
+            p.move(dx, dy);
+        }
     }
 
     @Override
     public String toString() {
-        if (x2 != 0 && y2 != 0) {
-            return String.format("{%1$d;%2$d}, {%3$d;%4$d}", x, y, x2, y2);
-        } else {
-            return String.format("{%1$d;%2$d}", x, y);
+        if (points.isEmpty()) {
+            return "Линия []";
         }
+        StringBuilder sb = new StringBuilder("Линия [");
+        for (int i = 0; i < points.size(); i++) {
+            sb.append(points.get(i));
+            if (i < points.size() - 1) sb.append(", ");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

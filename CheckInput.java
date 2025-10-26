@@ -100,28 +100,28 @@ public class CheckInput {
             if (name.isEmpty() && midName.isEmpty()) {
                 return null;
             } else if (midName.isEmpty()) {
-                Human humans = new Human(name, height);
+                Human humans = new Human(new Name(name), height);
                 humansList.add(String.valueOf(humans));
             } else if (name.isEmpty()) {
-                Human humans = new Human(midName, height);
+                Human humans = new Human(new Name(midName), height);
                 humansList.add(String.valueOf(humans));
             } else {
-                Human humans = new Human(name, midName, height);
+                Human humans = new Human(new Name(name, midName), height);
                 humansList.add(String.valueOf(humans));
             }
         } else if (name.isEmpty()) {
             if (midName.isEmpty()) {
-                Human humans = new Human(lastName, height);
+                Human humans = new Human(new Name(lastName), height);
                 humansList.add(String.valueOf(humans));
             } else {
-                Human humans = new Human(lastName, midName, height);
+                Human humans = new Human(new Name(lastName, midName), height);
                 humansList.add(String.valueOf(humans));
             }
         } else if (midName.isEmpty()) {
-            Human humans = new Human(lastName, name, height);
+            Human humans = new Human(new Name(lastName, name), height);
             humansList.add(String.valueOf(humans));
         } else {
-            Human humans = new Human(lastName, name, midName, height);
+            Human humans = new Human(new Name(lastName, name, midName), height);
             humansList.add(String.valueOf(humans));
         }
         return humansList;

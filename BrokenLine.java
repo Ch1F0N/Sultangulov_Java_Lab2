@@ -1,19 +1,28 @@
 public class BrokenLine {
-    private int x;
-    private int y;
+    private Point[] points;
 
-    public BrokenLine(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public BrokenLine(Point... points) {
+        this.points = points;
     }
 
-    public void movePoint() {
-        this.x += 2;
-        this.y -= 5;
+    public Point[] getPoints() {
+        return points;
+    }
+
+    public void move(double dx, double dy) {
+        for (Point p : points) {
+            p.move(dx, dy);
+        }
     }
 
     @Override
     public String toString() {
-        return String.format("{%1$d;%2$d}", x, y);
+        StringBuilder sb = new StringBuilder("Линия [");
+        for (int i = 0; i < points.length; i++) {
+            sb.append(points[i]);
+            if (i < points.length - 1) sb.append(", ");
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

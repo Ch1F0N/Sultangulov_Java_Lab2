@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        StringBuilder sb = new StringBuilder();
         while (true) {
             try {
                 Scanner scanner = new Scanner(System.in);
@@ -40,15 +39,15 @@ public class Main {
                             if (!lastName.isEmpty() || !name.isEmpty() || !midName.isEmpty()) {
                                 CheckInput.checkEmptyNames(namesList, lastName, name, midName);
                             }
+                        }
 
-                            System.out.println("\nСписок всех ФИО:");
-                            if (namesList.isEmpty()) {
-                                System.out.println("Все элементы списка пустые!");
-                            }
+                        System.out.println("\nСписок всех ФИО:");
+                        if (namesList.isEmpty()) {
+                            System.out.println("Все элементы списка пустые!");
+                        }
 
-                            for (int el = 0; el < namesList.size(); el++) {
-                                System.out.println(el + 1 + ") " + namesList.get(el));
-                            }
+                        for (int el = 0; el < namesList.size(); el++) {
+                            System.out.println(el + 1 + ") " + namesList.get(el));
                         }
 
                         System.out.println();
@@ -70,91 +69,103 @@ public class Main {
                                 height = CheckInput.readInt(scanner, "Введите рост человека: ", 0);
                                 CheckInput.checkEmptyHumans(humansList, lastName, name, midName, height);
                             }
+                        }
 
-                            System.out.println("\nСписок всех ФИО и их роста:");
-                            if (humansList.isEmpty()) {
-                                System.out.println("Все элементы списка пустые!");
-                            }
+                        System.out.println("\nСписок всех ФИО и их роста:");
+                        if (humansList.isEmpty()) {
+                            System.out.println("Все элементы списка пустые!");
+                        }
 
-                            for (int el = 0; el < humansList.size(); el++) {
-                                System.out.println(el + 1 + ") " + humansList.get(el) + " см.");
-                            }
+                        for (int el = 0; el < humansList.size(); el++) {
+                            System.out.println(el + 1 + ") " + humansList.get(el) + " см.");
                         }
 
                         System.out.println();
                         break;
 
                     case 3:
-                        // Человек с родителем
-                        PersonFather ivan = new PersonFather(new Name("Чудов", "Иван", null));
-                        PersonFather petr = new PersonFather(new Name("Чудов", "Петр", null));
-                        PersonFather boris = new PersonFather(new Name(null, "Борис", null));
+                        System.out.println("Создание людей:");
+
+                        PersonFather ivan = new PersonFather(new Human(new Name("Чудов", "Иван", null), 175), null);
+                        PersonFather petr = new PersonFather(new Human(new Name("Чудов", "Петр", null), 180), null);
+                        PersonFather boris = new PersonFather(new Human(new Name(null, "Борис", null), 170), null);
 
                         petr.setFather(ivan);
                         boris.setFather(petr);
 
-                        System.out.println(ivan);
-                        System.out.println(petr);
-                        System.out.println(boris);
+                        System.out.println("\nРезультат:");
+                        System.out.println("1) " + ivan);
+                        System.out.println("2) " + petr);
+                        System.out.println("3) " + boris);
                         System.out.println();
                         break;
 
                     case 4:
-                        // Ломаная
-                        BrokenLine firstLine1 = new BrokenLine(1, 5);
-                        BrokenLine firstLine2 = new BrokenLine(2, 8);
-                        BrokenLine firstLine3 = new BrokenLine(5, 3);
+                        // Точки первой ломаной
+                        Point a1 = new Point(1, 5);
+                        Point a2 = new Point(2, 8);
+                        Point a3 = new Point(5, 3);
+                        BrokenLine line1 = new BrokenLine(a1, a2, a3);
 
-                        String firstLine = firstLine1 + ", "
-                                + firstLine2 + ", "
-                                + firstLine3;
+                        // Точки второй ломаной
+                        Point b1 = a1;
+                        Point b2 = new Point(2, -5);
+                        Point b3 = new Point(4, -8);
+                        Point b4 = a3;
+                        BrokenLine line2 = new BrokenLine(b1, b2, b3, b4);
 
-                        System.out.println("Первая ломаная: " + firstLine);
+                        System.out.println("Исходные ломаные:");
+                        System.out.println("1) " + line1);
+                        System.out.println("2) " + line2);
 
-                        BrokenLine secondLine1 = firstLine1;
-                        BrokenLine secondLine2 = new BrokenLine(2, -5);
-                        BrokenLine secondLine3 = new BrokenLine(4, -8);
-                        BrokenLine secondLine4 = firstLine3;
+                        // Сдвигаем начало первой ломаной
+                        double dx = 3;
+                        double dy = -2;
+                        System.out.println("\nСдвигаем начало первой ломаной на (" + dx + ", " + dy + ")...");
+                        a1.move(dx, dy);
 
-                        String secondLine = secondLine1 + ", "
-                                + secondLine2 + ", "
-                                + secondLine3 + ", "
-                                + secondLine4;
-
-                        System.out.println("Вторая ломаная: " + secondLine);
-
-                        System.out.println("Сдвигаем начало первой ломаной...");
-                        firstLine1.movePoint();
-
-                        firstLine = firstLine1 + ", "
-                                + firstLine2 + ", "
-                                + firstLine3;
-                        secondLine = secondLine1 + ", "
-                                + secondLine2 + ", "
-                                + secondLine3 + ", "
-                                + secondLine4;
-
-                        System.out.println("Первая ломаная: " + firstLine);
-                        System.out.println("Вторая ломаная: " + secondLine);
+                        System.out.println("\nПосле сдвига:");
+                        System.out.println("1) " + line1);
+                        System.out.println("2) " + line2);
                         System.out.println();
                         break;
 
+
                     case 5:
-                        // Создаём Ломаную
                         BrokenLineEx9 emptyLine = new BrokenLineEx9();
-                        BrokenLineEx9 someLine = new BrokenLineEx9(2, 8, 3, -4);
-                        BrokenLineEx9 point = new BrokenLineEx9(9, 4);
+
+                        BrokenLineEx9 someLine = new BrokenLineEx9(
+                                new Point(2, 8),
+                                new Point(3, -4)
+                        );
+
+                        BrokenLineEx9 singlePointLine = new BrokenLineEx9(new Point(9, 4));
 
                         System.out.println("Ломаная без указания параметров: " + emptyLine);
                         System.out.println("Ломаная с указанием некоторого набора точек (2): " + someLine);
-                        System.out.println("Одна точка: " + point);
+                        System.out.println("Одна точка: " + singlePointLine);
                         System.out.println();
                         break;
 
                     case 6:
-                        // Длина ломаной
-                        System.out.println("Это задание находится на стадии разработки...");
+                        BrokenLineEx7 line = new BrokenLineEx7(
+                                new Point(1, 5),
+                                new Point(2, 8),
+                                new Point(5, 3)
+                        );
+
+                        System.out.println("Ломаная: " + line);
+
+                        System.out.printf("Длина ломаной: %.2f%n", line.getLength());
+
+                        line.addPoints(new Point(5, 15), new Point(8, 10));
+
+                        System.out.println("\nПосле добавления точек:");
+                        System.out.println("Ломаная: " + line);
+                        System.out.printf("Новая длина: %.2f%n", line.getLength());
+                        System.out.println();
                         break;
+
                 }
             }
             catch(InputMismatchException e){

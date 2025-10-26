@@ -1,9 +1,10 @@
 public class PersonFather {
-    private Name name;
+    private Human human;
     private PersonFather father;
 
-    public PersonFather(Name name) {
-        this.name = name;
+    public PersonFather(Human human, PersonFather father) {
+        this.human = human;
+        this.father = null;
     }
 
     public void setFather(PersonFather father) {
@@ -12,24 +13,46 @@ public class PersonFather {
 
     @Override
     public String toString() {
-        String lastName = name.getLastName();
-        String firstName = name.getName();
-        String midName = name.getMidName();
-
-        if (lastName == null || lastName.isEmpty()
-                && father != null
-                && father.name != null
-                && father.name.getLastName() != null) {
-            lastName = father.name.getLastName();
+        if (human == null) {
+            return "Неизвестный человек";
         }
-        if (midName == null || midName.isEmpty()) {
-            if (father != null && father.name != null && father.name.getName() != null) {
-                midName = father.name.getName() + "ович";
-            } else {
-                midName = "";
+
+        String lastName = human.getLastName();
+        String firstName = human.getName();
+        String midName = human.getMidName();
+
+        if ((lastName == null || lastName.isEmpty()) && father != null && father.human != null) {
+            lastName = father.human.getLastName();
+        }
+
+        if ((midName == null || midName.isEmpty()) && father != null && father.human != null) {
+            String fatherName = father.human.getName();
+            if (fatherName != null && !fatherName.isEmpty()) {
+                midName = fatherName + "ович";
             }
         }
 
-        return new Name(lastName, firstName, midName).toString();
+        String result = "";
+
+        if (lastName != null && !lastName.isEmpty()) {
+            result += lastName;
+        }
+
+        if (firstName != null && !firstName.isEmpty()) {
+            if (!result.isEmpty()) result += " ";
+            result += firstName;
+        }
+
+        if (midName != null && !midName.isEmpty()) {
+            if (!result.isEmpty()) result += " ";
+            result += midName;
+        }
+
+        // Если все поля пустые
+        if (result.isEmpty()) {
+            result = "Неизвестный человек";
+        }
+
+        return result;
     }
 }
