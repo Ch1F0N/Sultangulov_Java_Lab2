@@ -38,10 +38,22 @@ class Name {
     private String name;
     private String midName;
 
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getMidName() {
+        return midName;
+    }
+
     public Name() {
-        this.lastName = "Дуров";
-        this.name = "Павел";
-        this.midName = "Валерьевич (Человек по умолчанию)";
+        this.lastName = null;
+        this.name = null;
+        this.midName = null;
     }
 
     public Name(String lastName, String name, String midName) {
@@ -62,32 +74,18 @@ class Name {
         this.midName = null;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getMidName() {
-        return midName;
-    }
-
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (lastName != null && !lastName.isEmpty()) {
-            sb.append(lastName);
-        }
+        if (lastName != null && !lastName.isEmpty()) sb.append(lastName);
         if (name != null && !name.isEmpty()) {
-            if (!sb.isEmpty()) sb.append(" ");
+            if (sb.length() > 0) sb.append(" ");
             sb.append(name);
         }
         if (midName != null && !midName.isEmpty()) {
-            if (!sb.isEmpty()) sb.append(" ");
+            if (sb.length() > 0) sb.append(" ");
             sb.append(midName);
         }
-
         return sb.toString();
     }
 }
@@ -95,10 +93,10 @@ class Name {
 В классе я использовал перегрузку конструкторов, всего их в классе **Name** 4 разных вида, один из который по умолчанию (В своём коде я его не использую, создавал его для понимания в дальнейшем):
 ```java
 public Name() {
-    this.lastName = "Дуров";
-    this.name = "Павел";
-    this.midName = "Валерьевич (Человек по умолчанию)";
-}
+        this.lastName = null;
+        this.name = null;
+        this.midName = null;
+    }
 
 public Name(String lastName, String name, String midName) {
     this.lastName = lastName;
@@ -136,18 +134,15 @@ public String getMidName() {
 ```java
 public String toString() {
     StringBuilder sb = new StringBuilder();
-    if (lastName != null && !lastName.isEmpty()) {
-        sb.append(lastName);
-    }
+    if (lastName != null && !lastName.isEmpty()) sb.append(lastName);
     if (name != null && !name.isEmpty()) {
-        if (!sb.isEmpty()) sb.append(" ");
+        if (sb.length() > 0) sb.append(" ");
         sb.append(name);
     }
     if (midName != null && !midName.isEmpty()) {
-        if (!sb.isEmpty()) sb.append(" ");
+        if (sb.length() > 0) sb.append(" ");
         sb.append(midName);
     }
-
     return sb.toString();
 }
 ```
@@ -459,43 +454,38 @@ public class Human {
     private Name name;
     private int height;
 
-    public Human() {
-        this.name = null;
-        this.height = 152;
-    }
-
     public Human(Name name, int height) {
         this.name = name;
         this.height = height;
     }
 
+    public Name getNameObj() {
+        return name;
+    }
+
+    public String getLastName() {
+        return name.getLastName();
+    }
+
+    public String getName() {
+        return name.getName();
+    }
+
+    public String getMidName() {
+        return name.getMidName();
+    }
+
+    @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        String lastName = name.getLastName();
-        String firstName = name.getName();
-        String midName = name.getMidName();
-
-        if (lastName != null && !lastName.isEmpty()) {
-            sb.append(lastName);
+        if (name != null) {
+            String n = name.toString();
+            return n + " (рост " + height + " см)";
+        } else {
+            return "Неизвестно";
         }
-        if (firstName != null && !firstName.isEmpty()) {
-            if (!sb.isEmpty()) sb.append(" ");
-            sb.append(firstName);
-        }
-        if (midName != null && !midName.isEmpty()) {
-            if (!sb.isEmpty()) sb.append(" ");
-            sb.append(midName);
-        }
-
-        return sb.append(" и ростом ").append(height).toString();
     }
 }
 ```
-В этой сущности почти нет отличий от прошлой **Name**, кроме добавления нового параметра 'height' и вывода из перегруженного метода **toString()**:
-```java
-return sb.append(" и ростом ").append(height).toString();
-```
-
 ---
 
 **Реализуем пользовательский ввод**
@@ -535,11 +525,11 @@ for (int i = 1; i <= countNames2; i++){
 Для выполнения этого задания я создал класс сущность **PersonFather**:
 ```java
 public class PersonFather {
-    private Name name;
+    private Human human;
     private PersonFather father;
 
-    public PersonFather(Name name) {
-        this.name = name;
+    public PersonFather(Human human) {
+        this.human = human;
     }
 
     public void setFather(PersonFather father) {
@@ -548,61 +538,105 @@ public class PersonFather {
 
     @Override
     public String toString() {
-        String lastName = name.getLastName();
-        String firstName = name.getName();
-        String midName = name.getMidName();
-
-        if (lastName == null || lastName.isEmpty()
-                && father != null
-                && father.name != null
-                && father.name.getLastName() != null) {
-            lastName = father.name.getLastName();
+        if (human == null) {
+            return "Неизвестный человек";
         }
-        if (midName == null || midName.isEmpty()) {
-            if (father != null && father.name != null && father.name.getName() != null) {
-                midName = father.name.getName() + "ович";
-            } else {
-                midName = "";
+
+        String lastName = human.getLastName();
+        String firstName = human.getName();
+        String midName = human.getMidName();
+
+        if ((lastName == null || lastName.isEmpty()) && father != null && father.human != null) {
+            lastName = father.human.getLastName();
+        }
+
+        if ((midName == null || midName.isEmpty()) && father != null && father.human != null) {
+            String fatherName = father.human.getName();
+            if (fatherName != null && !fatherName.isEmpty()) {
+                midName = fatherName + "ович";
             }
         }
 
-        return new Name(lastName, firstName, midName).toString();
+        String result = "";
+
+        if (lastName != null && !lastName.isEmpty()) {
+            result += lastName;
+        }
+
+        if (firstName != null && !firstName.isEmpty()) {
+            if (!result.isEmpty()) result += " ";
+            result += firstName;
+        }
+
+        if (midName != null && !midName.isEmpty()) {
+            if (!result.isEmpty()) result += " ";
+            result += midName;
+        }
+
+        // Если все поля пустые
+        if (result.isEmpty()) {
+            result = "Неизвестный человек";
+        }
+
+        return result;
     }
 }
 ```
-В нём всего один конструктор с одним параметром 'name', который содержит в себе объект класса **Name**, а то есть ФИО и метод **setFather()**, который задаёт отца для создаваемого объекта:
+В нём всего один конструктор с одним параметром 'name', который содержит в себе объект класса **Human**, а то есть ФИО и метод **setFather()**, который задаёт отца для создаваемого объекта:
 ```java
-public PersonFather(Name name) {
-    this.name = name;
+public PersonFather(Human human) {
+    this.human = human;
 }
 
 public void setFather(PersonFather father) {
     this.father = father;
 }
 ```
-Перегрузка метода **toString()**, в которой созданы 3 поля ФИО: 'lastName', 'firstName', 'midName' (как раз для этих полей были сделаны геттеры в первом задании), для последующей проверки, в конце возвращаем строку объекта класса **Name**:
+Перегрузка метода **toString()**
 ```java
 @Override
 public String toString() {
-    String lastName = name.getLastName();
-    String firstName = name.getName();
-    String midName = name.getMidName();
-
-    if (lastName == null || lastName.isEmpty()
-            && father != null
-            && father.name != null
-            && father.name.getLastName() != null) {
-        lastName = father.name.getLastName();
+    if (human == null) {
+        return "Неизвестный человек";
     }
-    if (midName == null || midName.isEmpty()) {
-        if (father != null && father.name != null && father.name.getName() != null) {
-            midName = father.name.getName() + "ович";
-        } else {
-            midName = "";
+
+    String lastName = human.getLastName();
+    String firstName = human.getName();
+    String midName = human.getMidName();
+
+    if ((lastName == null || lastName.isEmpty()) && father != null && father.human != null) {
+        lastName = father.human.getLastName();
+    }
+
+    if ((midName == null || midName.isEmpty()) && father != null && father.human != null) {
+        String fatherName = father.human.getName();
+        if (fatherName != null && !fatherName.isEmpty()) {
+            midName = fatherName + "ович";
         }
     }
 
-    return new Name(lastName, firstName, midName).toString();
+    String result = "";
+
+    if (lastName != null && !lastName.isEmpty()) {
+        result += lastName;
+    }
+
+    if (firstName != null && !firstName.isEmpty()) {
+        if (!result.isEmpty()) result += " ";
+        result += firstName;
+    }
+
+    if (midName != null && !midName.isEmpty()) {
+        if (!result.isEmpty()) result += " ";
+        result += midName;
+    }
+
+    // Если все поля пустые
+    if (result.isEmpty()) {
+        result = "Неизвестный человек";
+    }
+
+    return result;
 }
 ```
 > Метод можно доработать, чтобы в зависимости от имени отца зависело окончание отчества его ребёнка, а также разность полов.
@@ -611,102 +645,130 @@ public String toString() {
 **Реализуем ввод**
 Так как возникли трудности, то программа работает без пользовательского ввода, весь ввод реализован в самом коде:
 ```java
-PersonFather ivan = new PersonFather(new Name("Чудов", "Иван", null));
-PersonFather petr = new PersonFather(new Name("Чудов", "Петр", null));
-PersonFather boris = new PersonFather(new Name(null, "Борис", null));
+System.out.println("Создание людей:");
+
+PersonFather ivan = new PersonFather(new Human(new Name("Чудов", "Иван", null), 175), null);
+PersonFather petr = new PersonFather(new Human(new Name("Чудов", "Петр", null), 180), null);
+PersonFather boris = new PersonFather(new Human(new Name(null, "Борис", null), 170), null);
 
 petr.setFather(ivan);
 boris.setFather(petr);
 
-System.out.println(ivan);
-System.out.println(petr);
-System.out.println(boris);
+System.out.println("\nРезультат:");
+System.out.println("1) " + ivan);
+System.out.println("2) " + petr);
+System.out.println("3) " + boris);
+System.out.println();
+break;
 ```
 ---
 
 ## Задача 4:
 > **Задача 4 заключается в том, чтобы создать сущность Ломаная, которая будет выводить все точки двух ломаных**
 
-Для выполнения этого задания я создал класс-сущность **BrokenLine**:
+Для выполнения этого задания я создал класс-сущность **Point**:
 ```java
-public class BrokenLine {
-    private int x;
-    private int y;
+public class Point {
+    private double x;
+    private double y;
 
-    public BrokenLine(int x, int y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public void movePoint() {
-        this.x += 2;
-        this.y -= 5;
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void move(double dx, double dy) {
+        this.x += dx;
+        this.y += dy;
     }
 
     @Override
     public String toString() {
-        return String.format("{%1$d;%2$d}", x, y);
+        return "{" + x + ";" + y + "}";
     }
 }
 ```
-Конструктор **BrokenLine()**, где присваиваются значения 'x' и 'y', и метод **movePoint()**, который сдвигает координаты точки (в данном случае 'x' сдвигается вперёд на 2, а 'y' вниз на 5):
+И класс-сущность **BrokenLine**:
 ```java
-public BrokenLine(int x, int y) {
-    this.x = x;
-    this.y = y;
-}
+public class BrokenLine {
+    private Point[] points;
 
-public void movePoint() {
-    this.x += 2;
-    this.y -= 5;
+    public BrokenLine(Point... points) {
+        this.points = points;
+    }
+
+    public Point[] getPoints() {
+        return points;
+    }
+
+    public void move(double dx, double dy) {
+        for (Point p : points) {
+            p.move(dx, dy);
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Линия [");
+        for (int i = 0; i < points.length; i++) {
+            sb.append(points[i]);
+            if (i < points.length - 1) sb.append(", ");
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }
 ```
 Перегрузка метода **toString()** выводит строку типа: {x;y}:
 ```java
 @Override
 public String toString() {
-    return String.format("{%1$d;%2$d}", x, y); // %d заменяется на переменные с целыми числами x, y, n$ обозначает, какая именно по счёту должна стоять переменная на этом месте
+    StringBuilder sb = new StringBuilder("Линия [");
+    for (int i = 0; i < points.length; i++) {
+        sb.append(points[i]);
+        if (i < points.length - 1) sb.append(", ");
+    }
+    sb.append("]");
+    return sb.toString();
 }
 ```
 
 ---
 **Реализуем пользовательский ввод**
 ```java
-BrokenLine firstLine1 = new BrokenLine(1, 5);
-BrokenLine firstLine2 = new BrokenLine(2, 8);
-BrokenLine firstLine3 = new BrokenLine(5, 3);
+Point a1 = new Point(1, 5);
+Point a2 = new Point(2, 8);
+Point a3 = new Point(5, 3);
+BrokenLine line1 = new BrokenLine(a1, a2, a3);
 
-String firstLine = firstLine1 + ", "
-        + firstLine2 + ", "
-        + firstLine3;
+// Точки второй ломаной
+Point b1 = a1;
+Point b2 = new Point(2, -5);
+Point b3 = new Point(4, -8);
+Point b4 = a3;
+BrokenLine line2 = new BrokenLine(b1, b2, b3, b4);
 
-System.out.println("Первая ломаная: " + firstLine);
+System.out.println("Исходные ломаные:");
+System.out.println("1) " + line1);
+System.out.println("2) " + line2);
 
-BrokenLine secondLine1 = firstLine1;
-BrokenLine secondLine2 = new BrokenLine(2, -5);
-BrokenLine secondLine3 = new BrokenLine(4, -8);
-BrokenLine secondLine4 = firstLine3;
+// Сдвигаем начало первой ломаной
+double dx = 3;
+double dy = -2;
+System.out.println("\nСдвигаем начало первой ломаной на (" + dx + ", " + dy + ")...");
+a1.move(dx, dy);
 
-String secondLine = secondLine1 + ", "
-        + secondLine2 + ", "
-        + secondLine3 + ", "
-        + secondLine4;
-
-System.out.println("Вторая ломаная: " + secondLine);
-
-System.out.println("Сдвигаем начало первой ломаной...");
-firstLine1.movePoint();
-
-firstLine = firstLine1 + ", "
-        + firstLine2 + ", "
-        + firstLine3;
-secondLine = secondLine1 + ", "
-        + secondLine2 + ", "
-        + secondLine3 + ", "
-        + secondLine4;
-
-System.out.println("Первая ломаная: " + firstLine);
-System.out.println("Вторая ломаная: " + secondLine);
+System.out.println("\nПосле сдвига:");
+System.out.println("1) " + line1);
+System.out.println("2) " + line2);
 System.out.println();
 ```
 ---
@@ -716,67 +778,72 @@ System.out.println();
 
 Для выполнения этого задания я создал класс-сущность **BrokenLineEx9** 'Ex9' - номер задания:
 ```java
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class BrokenLineEx9 {
-    private int x;
-    private int y;
-    private int x2;
-    private int y2;
+    private List<Point> points;
 
     public BrokenLineEx9() {
-        this.x = 0;
-        this.y = 0;
+        this.points = new ArrayList<>();
     }
 
-    public BrokenLineEx9(int x, int y, int x2, int y2) {
-        this.x = x;
-        this.y = y;
-        this.x2 = x2;
-        this.y2 = y2;
+    public BrokenLineEx9(Point... points) {
+        this.points = new ArrayList<>(Arrays.asList(points));
     }
 
-    public BrokenLineEx9(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public void addPoint(Point point) {
+        points.add(point);
     }
 
-    public void movePoint() {
-        this.x += 2;
-        this.y -= 5;
+    public List<Point> getPoints() {
+        return points;
+    }
+
+    public void move(double dx, double dy) {
+        for (Point p : points) {
+            p.move(dx, dy);
+        }
     }
 
     @Override
     public String toString() {
-        if (x2 != 0 && y2 != 0) {
-            return String.format("{%1$d;%2$d}, {%3$d;%4$d}", x, y, x2, y2);
-        } else {
-            return String.format("{%1$d;%2$d}", x, y);
+        if (points.isEmpty()) return "Линия []";
+        StringBuilder sb = new StringBuilder("Линия [");
+        for (int i = 0; i < points.size(); i++) {
+            sb.append(points.get(i));
+            if (i < points.size() - 1) sb.append(", ");
         }
+        sb.append("]");
+        return sb.toString();
     }
 }
 ```
-В новой сущности я перегрузил 2 конструктора **BrokenLineEx9**, где первый по умолчанию, т.е объект создаётся даже без параметров и другой, где задаются координаты сразу двух точек:
+В новой сущности я перегрузил 2 конструктора **BrokenLineEx9**, где первый по умолчанию, т.е объект создаётся даже без параметров и другой, где задаются координаты произвольного кол-ва точек:
 ```java
 public BrokenLineEx9() {
-    this.x = 0;
-    this.y = 0;
+    this.points = new ArrayList<>();
 }
 
-public BrokenLineEx9(int x, int y, int x2, int y2) {
-    this.x = x;
-    this.y = y;
-    this.x2 = x2;
-    this.y2 = y2;
+public BrokenLineEx9(Point... points) {
+    this.points = new ArrayList<>(Arrays.asList(points));
 }
 ```
-Перегрузил метод **toString()**, в котором теперь проверяется, ввёл пользователь сразу координаты двух точек или только одной:
+Перегрузка метода **toString()**:
 ```java
 @Override
 public String toString() {
-    if (x2 != 0 && y2 != 0) {
-        return String.format("{%1$d;%2$d}, {%3$d;%4$d}", x, y, x2, y2);
-    } else {
-        return String.format("{%1$d;%2$d}", x, y);
+    if (points.isEmpty()) {
+        return "Линия []";
     }
+    StringBuilder sb = new StringBuilder("Линия [");
+    for (int i = 0; i < points.size(); i++) {
+        sb.append(points.get(i));
+        if (i < points.size() - 1) sb.append(", ");
+    }
+    sb.append("]");
+    return sb.toString();
 }
 ```
 
@@ -784,13 +851,127 @@ public String toString() {
 **Реализуем пользовательский ввод**
 ```java
 BrokenLineEx9 emptyLine = new BrokenLineEx9();
-BrokenLineEx9 someLine = new BrokenLineEx9(2, 8, 3, -4);
-BrokenLineEx9 point = new BrokenLineEx9(9, 4);
+
+BrokenLineEx9 someLine = new BrokenLineEx9(
+        new Point(2, 8),
+        new Point(3, -4)
+);
+
+BrokenLineEx9 singlePointLine = new BrokenLineEx9(new Point(9, 4));
 
 System.out.println("Ломаная без указания параметров: " + emptyLine);
 System.out.println("Ломаная с указанием некоторого набора точек (2): " + someLine);
-System.out.println("Одна точка: " + point);
+System.out.println("Одна точка: " + singlePointLine);
+System.out.println();
 ```
+---
+
+## Задача 6:
+> **Задача 6 заключается в том, чтобы изменить сущность Ломаная из прошлого задания и дать ей возможность добавлять к уже имеющимся точкам - новые точки и возращать длину Ломаной**
+
+Для выполнения этого задания я создал класс-сущность **BrokenLineEx7** 'Ex7' - номер задания:
+```java
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class BrokenLineEx7 {
+    private List<Point> points;
+
+    public BrokenLineEx7() {
+        this.points = new ArrayList<>();
+    }
+
+    public BrokenLineEx7(Point... points) {
+        this.points = new ArrayList<>(Arrays.asList(points));
+    }
+
+    public void addPoint(Point point) {
+        if (point != null) {
+            points.add(point);
+        }
+    }
+
+    public void addPoints(Point... newPoints) {
+        points.addAll(Arrays.asList(newPoints));
+    }
+
+    public double getLength() {
+        if (points.size() < 2) return 0.0;
+
+        double length = 0.0;
+        for (int i = 0; i < points.size() - 1; i++) {
+            Point p1 = points.get(i);
+            Point p2 = points.get(i + 1);
+            double dx = p2.getX() - p1.getX();
+            double dy = p2.getY() - p1.getY();
+            length += Math.sqrt(dx * dx + dy * dy);
+        }
+        return length;
+    }
+
+    public void move(double dx, double dy) {
+        for (Point p : points) {
+            p.move(dx, dy);
+        }
+    }
+
+    @Override
+    public String toString() {
+        if (points.isEmpty()) {
+            return "Линия []";
+        }
+        StringBuilder sb = new StringBuilder("Линия [");
+        for (int i = 0; i < points.size(); i++) {
+            sb.append(points.get(i));
+            if (i < points.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+}
+```
+Перегрузка метода **toString()**:
+```java
+@Override
+public String toString() {
+    if (points.isEmpty()) {
+        return "Линия []";
+    }
+    StringBuilder sb = new StringBuilder("Линия [");
+    for (int i = 0; i < points.size(); i++) {
+        sb.append(points.get(i));
+        if (i < points.size() - 1) {
+            sb.append(", ");
+        }
+    }
+    sb.append("]");
+    return sb.toString();
+}
+```
+---
+**Реализуем пользовательский ввод**
+```java
+BrokenLineEx7 line = new BrokenLineEx7(
+        new Point(1, 5),
+        new Point(2, 8),
+        new Point(5, 3)
+);
+
+System.out.println("Ломаная: " + line);
+
+System.out.printf("Длина ломаной: %.2f%n", line.getLength());
+
+line.addPoints(new Point(5, 15), new Point(8, 10));
+
+System.out.println("\nПосле добавления точек:");
+System.out.println("Ломаная: " + line);
+System.out.printf("Новая длина: %.2f%n", line.getLength());
+System.out.println();
+```
+
 ---
 
 # Защита от ошибок
